@@ -9,8 +9,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	"github.com/azuar4e/microservices-tfg/internal/initializers"
-	"github.com/azuar4e/microservices-tfg/internal/models"
+	"github.com/azuar4e/api-gateway-tfg/internal/initializers"
+	"github.com/azuar4e/api-gateway-tfg/internal/models"
 	"github.com/gin-gonic/gin"
 )
 

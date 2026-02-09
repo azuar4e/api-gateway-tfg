@@ -1,7 +1,7 @@
 package initializers
 
 import (
-	"github.com/azuar4e/microservices-tfg/internal/models"
+	"github.com/azuar4e/api-gateway-tfg/internal/models"
 )
 
 func SyncDB() {

@@ -1,4 +1,4 @@
-module github.com/azuar4e/microservices-tfg
+module github.com/azuar4e/api-gateway-tfg
 
 go 1.24
 

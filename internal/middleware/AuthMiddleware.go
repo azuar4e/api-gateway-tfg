@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/azuar4e/microservices-tfg/internal/initializers"
-	"github.com/azuar4e/microservices-tfg/internal/models"
+	"github.com/azuar4e/api-gateway-tfg/internal/initializers"
+	"github.com/azuar4e/api-gateway-tfg/internal/models"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )

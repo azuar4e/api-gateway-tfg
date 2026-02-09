@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/azuar4e/microservices-tfg/internal/controllers"
-	"github.com/azuar4e/microservices-tfg/internal/handlers"
-	"github.com/azuar4e/microservices-tfg/internal/initializers"
-	"github.com/azuar4e/microservices-tfg/internal/middleware"
+	"github.com/azuar4e/api-gateway-tfg/internal/controllers"
+	"github.com/azuar4e/api-gateway-tfg/internal/handlers"
+	"github.com/azuar4e/api-gateway-tfg/internal/initializers"
+	"github.com/azuar4e/api-gateway-tfg/internal/middleware"
 	"github.com/gin-gonic/gin"
 )
 

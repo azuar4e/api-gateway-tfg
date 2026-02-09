@@ -13,8 +13,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/sns"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
-	"github.com/azuar4e/microservices-tfg/internal/initializers"
-	"github.com/azuar4e/microservices-tfg/internal/models"
+	"github.com/azuar4e/api-gateway-tfg/internal/initializers"
+	"github.com/azuar4e/api-gateway-tfg/internal/models"
 	"github.com/gin-gonic/gin"
 )
 
