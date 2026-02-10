@@ -1,25 +1,18 @@
 # Git
-.git
+.github/
 .gitignore
 
 # Go
 *.exe
-vendor/
 
-# Environment Variables (CRITICAL: Do not include in image)
+# Env file
 .env
-.env.*
 
-# IDEs
+# IDE
 .idea/
-.vscode/
 
 # LocalStack
 localstack-data/
 
 # Docker
-Dockerfile
 docker-compose.yaml
-
-# Build artifacts
-go.sum
