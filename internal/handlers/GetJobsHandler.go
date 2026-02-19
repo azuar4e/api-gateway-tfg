@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -23,7 +24,7 @@ func GetJobsHandler(c *gin.Context) {
 	uid := user.(models.User).ID
 
 	out, err := initializers.DY.Query(context.TODO(), &dynamodb.QueryInput{
-		TableName:              aws.String("PriceAlerts"),
+		TableName:              aws.String(os.Getenv("TABLE_NAME")),
 		KeyConditionExpression: aws.String("PK = :uid"),
 		ExpressionAttributeValues: map[string]types.AttributeValue{
 			":uid": &types.AttributeValueMemberN{Value: strconv.FormatUint(uint64(uid), 10)},

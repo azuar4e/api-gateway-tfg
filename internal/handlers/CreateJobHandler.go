@@ -16,8 +16,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const tableName = "PriceAlerts"
-
 func CreateJobHandler(c *gin.Context) {
 	var req struct {
 		URL         string  `json:"url" binding:"required,url"`
@@ -55,7 +53,7 @@ func CreateJobHandler(c *gin.Context) {
 	}
 
 	_, err = initializers.DY.PutItem(context.TODO(), &dynamodb.PutItemInput{
-		TableName: aws.String(tableName),
+		TableName: aws.String(os.Getenv("TABLE_NAME")),
 		Item:      av,
 	})
 

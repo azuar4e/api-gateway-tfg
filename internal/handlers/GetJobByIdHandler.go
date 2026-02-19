@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -35,7 +36,7 @@ func GetJobByIdHandler(c *gin.Context) {
 	}
 
 	out, err := initializers.DY.GetItem(context.TODO(), &dynamodb.GetItemInput{
-		TableName: aws.String("PriceAlerts"),
+		TableName: aws.String(os.Getenv("TABLE_NAME")),
 		Key: map[string]types.AttributeValue{
 			"PK": &types.AttributeValueMemberN{Value: strconv.FormatUint(uint64(userID), 10)},
 			"SK": &types.AttributeValueMemberN{Value: strconv.FormatInt(jobID, 10)},
