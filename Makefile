@@ -3,4 +3,4 @@
 start:
 	docker start pgadmin
 	docker start postgres-db
-	docker start localstack
+	docker compose up -d

@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -11,7 +10,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
-	"github.com/aws/aws-sdk-go-v2/service/sns"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/azuar4e/api-gateway-tfg/internal/initializers"
 	"github.com/azuar4e/api-gateway-tfg/internal/models"
@@ -48,7 +46,8 @@ func CreateJobHandler(c *gin.Context) {
 		UpdatedAt:   time.Now().Format(time.RFC3339),
 	}
 
-	body, _ := json.Marshal(item)
+	job := item.ToJob()
+	body, _ := json.Marshal(job)
 	av, err := attributevalue.MarshalMap(item)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to build item"})
@@ -75,54 +74,12 @@ func CreateJobHandler(c *gin.Context) {
 	)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to queue job", "log": err})
-		return
-	}
-
-	//logica para suscribir al usuario al topic de sns
-	output, err := initializers.SNS.Subscribe(context.TODO(), &sns.SubscribeInput{
-		Protocol: aws.String("email"),
-		TopicArn: aws.String(os.Getenv("SNS_TOPIC_ARN")),
-		Endpoint: aws.String(user.(models.User).Email),
-	})
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": fmt.Sprintf(
-				"failed to subscribe email %v to topic %v",
-				user.(models.User).Email,
-				os.Getenv("SNS_TOPIC_ARN"),
-			),
-			"log": err,
-		})
-		return
-	}
-
-	filterPolicy := map[string][]uint{
-		"user_id": {user.(models.User).ID},
-	}
-	filterPolicyJSON, _ := json.Marshal(filterPolicy)
-
-	_, err = initializers.SNS.SetSubscriptionAttributes(context.TODO(), &sns.SetSubscriptionAttributesInput{
-		SubscriptionArn: output.SubscriptionArn,
-		AttributeName:   aws.String("FilterPolicy"),
-		AttributeValue:  aws.String(string(filterPolicyJSON)),
-	})
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": fmt.Sprintf(
-				"failed to set subscription policy of email %v",
-				user.(models.User).Email,
-			),
-			"log": err,
-		})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to queue job", "log": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusAccepted, gin.H{
 		"id":     jobID,
 		"status": "Job queued successfully",
-		"email":  "Email subscribed successfully",
 	})
 }

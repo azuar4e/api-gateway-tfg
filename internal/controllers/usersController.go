@@ -1,10 +1,15 @@
 package controllers
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/sns"
 	"github.com/azuar4e/api-gateway-tfg/internal/initializers"
 	"github.com/azuar4e/api-gateway-tfg/internal/models"
 	"github.com/gin-gonic/gin"
@@ -54,7 +59,6 @@ func SinginHandler(c *gin.Context) {
 }
 
 func RegisterHandler(c *gin.Context) {
-
 	var body struct {
 		Email    string `json:"email" binding:"required"`
 		Password string `json:"password" binding:"required"`
@@ -63,7 +67,6 @@ func RegisterHandler(c *gin.Context) {
 	c.BindJSON(&body)
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to hash the password"})
 		return
@@ -71,13 +74,36 @@ func RegisterHandler(c *gin.Context) {
 
 	user := models.User{Email: body.Email, Password: string(hash)}
 	res := initializers.DB.Create(&user)
-
 	if res.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to create the user"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{})
+	filterPolicy := map[string][]uint{
+		"user_id": {user.ID},
+	}
+	filterPolicyJSON, _ := json.Marshal(filterPolicy)
+
+	_, err = initializers.SNS.Subscribe(context.TODO(), &sns.SubscribeInput{
+		Protocol: aws.String("email"),
+		TopicArn: aws.String(os.Getenv("SNS_TOPIC_ARN")),
+		Endpoint: aws.String(user.Email),
+		Attributes: map[string]string{
+			"FilterPolicy": string(filterPolicyJSON),
+		},
+	})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": fmt.Sprintf("failed to subscribe email %v", user.Email),
+			"log":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "User registered. Please check your email to confirm subscription.",
+	})
 }
 
 func Validate(c *gin.Context) {

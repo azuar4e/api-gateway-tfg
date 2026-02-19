@@ -11,6 +11,7 @@ type JobDynamoItem struct {
 	SK          int64   `dynamodbav:"SK"` //job_id
 	URL         string  `dynamodbav:"url"`
 	TargetPrice float64 `dynamodbav:"target_price"`
+	LastPrice   float64 `dynamodbav:"last_price"`
 	Status      string  `dynamodbav:"status"`
 	CreatedAt   string  `dynamodbav:"created_at"`
 	UpdatedAt   string  `dynamodbav:"updated_at"`
@@ -25,6 +26,7 @@ func (d JobDynamoItem) ToJob() Job {
 		UserID:      uint(d.PK),
 		URL:         d.URL,
 		TargetPrice: d.TargetPrice,
+		LastPrice:   d.LastPrice,
 		Status:      d.Status,
 		CreatedAt:   created,
 		UpdatedAt:   updated,
