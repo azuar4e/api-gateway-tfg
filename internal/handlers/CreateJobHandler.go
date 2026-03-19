@@ -16,6 +16,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type DynamoInterface interface {
+	PutItem(ctx context.Context, params *dynamodb.PutItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.PutItemOutput, error)
+}
+
+type SQSInterface interface {
+	SendMessage(ctx context.Context, params *sqs.SendMessageInput, optFns ...func(*sqs.Options)) (*sqs.SendMessageOutput, error)
+}
+
+var DynamoClient DynamoInterface = initializers.DY
+var SQSClient SQSInterface = initializers.SQS
+
 func CreateJobHandler(c *gin.Context) {
 	var req struct {
 		URL         string  `json:"url" binding:"required,url"`
@@ -52,7 +63,7 @@ func CreateJobHandler(c *gin.Context) {
 		return
 	}
 
-	_, err = initializers.DY.PutItem(context.TODO(), &dynamodb.PutItemInput{
+	_, err = DynamoClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
 		TableName: aws.String(os.Getenv("TABLE_NAME")),
 		Item:      av,
 	})
@@ -63,7 +74,7 @@ func CreateJobHandler(c *gin.Context) {
 	}
 
 	//logica para encolar en sqs
-	_, err = initializers.SQS.SendMessage(
+	_, err = SQSClient.SendMessage(
 		context.TODO(),
 		&sqs.SendMessageInput{
 			QueueUrl:    aws.String(os.Getenv("SQS_QUEUE_URL")),
