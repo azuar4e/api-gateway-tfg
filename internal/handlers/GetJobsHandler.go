@@ -15,6 +15,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type DynamoInterfaceQuery interface {
+	Query(ctx context.Context, params *dynamodb.QueryInput, optFns ...func(*dynamodb.Options)) (*dynamodb.QueryOutput, error)
+}
+
+var DynamoClientQuery DynamoInterfaceQuery = initializers.DY
+
 func GetJobsHandler(c *gin.Context) {
 	user, ok := c.Get("user")
 	if !ok {
@@ -23,7 +29,7 @@ func GetJobsHandler(c *gin.Context) {
 	}
 	uid := user.(models.User).ID
 
-	out, err := initializers.DY.Query(context.TODO(), &dynamodb.QueryInput{
+	out, err := DynamoClientQuery.Query(context.TODO(), &dynamodb.QueryInput{
 		TableName:              aws.String(os.Getenv("TABLE_NAME")),
 		KeyConditionExpression: aws.String("PK = :uid"),
 		ExpressionAttributeValues: map[string]types.AttributeValue{

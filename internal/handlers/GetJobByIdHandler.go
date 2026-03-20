@@ -15,6 +15,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type DynamoInterfaceGet interface {
+	GetItem(ctx context.Context, params *dynamodb.GetItemInput, optFns ...func(*dynamodb.Options)) (*dynamodb.GetItemOutput, error)
+}
+
+var DynamoClientGet DynamoInterfaceGet = initializers.DY
+
 func GetJobByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -35,7 +41,7 @@ func GetJobByIdHandler(c *gin.Context) {
 		return
 	}
 
-	out, err := initializers.DY.GetItem(context.TODO(), &dynamodb.GetItemInput{
+	out, err := DynamoClientGet.GetItem(context.TODO(), &dynamodb.GetItemInput{
 		TableName: aws.String(os.Getenv("TABLE_NAME")),
 		Key: map[string]types.AttributeValue{
 			"PK": &types.AttributeValueMemberN{Value: strconv.FormatUint(uint64(userID), 10)},
