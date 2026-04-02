@@ -45,8 +45,14 @@ func CreateJobHandler(c *gin.Context) {
 	}
 
 	jobID := time.Now().UnixMicro()
+	userObj, ok := user.(models.User)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "invalid user type in context"})
+		return
+	}
+
 	item := models.JobDynamoItem{
-		PK:          int64(user.(models.User).ID),
+		PK:          int64(userObj.ID),
 		SK:          jobID,
 		URL:         req.URL,
 		TargetPrice: req.TargetPrice,

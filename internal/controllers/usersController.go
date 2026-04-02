@@ -64,7 +64,10 @@ func RegisterHandler(c *gin.Context) {
 		Password string `json:"password" binding:"required"`
 	}
 
-	c.BindJSON(&body)
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
 	if err != nil {
@@ -94,6 +97,8 @@ func RegisterHandler(c *gin.Context) {
 	})
 
 	if err != nil {
+		initializers.DB.Delete(&user)
+
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": fmt.Sprintf("failed to subscribe email %v", user.Email),
 			"log":   err.Error(),
