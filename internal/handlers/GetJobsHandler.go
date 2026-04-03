@@ -19,7 +19,14 @@ type DynamoInterfaceQuery interface {
 	Query(ctx context.Context, params *dynamodb.QueryInput, optFns ...func(*dynamodb.Options)) (*dynamodb.QueryOutput, error)
 }
 
-var DynamoClientQuery DynamoInterfaceQuery = initializers.DY
+var DynamoClientQuery DynamoInterfaceQuery
+
+func getDynamoQuery() DynamoInterfaceQuery {
+	if DynamoClientQuery != nil {
+		return DynamoClientQuery
+	}
+	return initializers.DY
+}
 
 func GetJobsHandler(c *gin.Context) {
 	user, ok := c.Get("user")
@@ -29,7 +36,7 @@ func GetJobsHandler(c *gin.Context) {
 	}
 	uid := user.(models.User).ID
 
-	out, err := DynamoClientQuery.Query(context.TODO(), &dynamodb.QueryInput{
+	out, err := getDynamoQuery().Query(context.TODO(), &dynamodb.QueryInput{
 		TableName:              aws.String(os.Getenv("TABLE_NAME")),
 		KeyConditionExpression: aws.String("PK = :uid"),
 		ExpressionAttributeValues: map[string]types.AttributeValue{

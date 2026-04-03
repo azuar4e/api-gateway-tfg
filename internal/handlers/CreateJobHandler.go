@@ -24,8 +24,23 @@ type SQSInterface interface {
 	SendMessage(ctx context.Context, params *sqs.SendMessageInput, optFns ...func(*sqs.Options)) (*sqs.SendMessageOutput, error)
 }
 
-var DynamoClient DynamoInterface = initializers.DY
+var DynamoClient DynamoInterface
+
+func getDynamo() DynamoInterface {
+	if DynamoClient != nil {
+		return DynamoClient
+	}
+	return initializers.DY
+}
+
 var SQSClient SQSInterface = initializers.SQS
+
+func getSQS() SQSInterface {
+	if SQSClient != nil {
+		return SQSClient
+	}
+	return initializers.SQS
+}
 
 func CreateJobHandler(c *gin.Context) {
 	var req struct {
@@ -69,7 +84,7 @@ func CreateJobHandler(c *gin.Context) {
 		return
 	}
 
-	_, err = DynamoClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
+	_, err = getDynamo().PutItem(context.TODO(), &dynamodb.PutItemInput{
 		TableName: aws.String(os.Getenv("TABLE_NAME")),
 		Item:      av,
 	})
@@ -80,7 +95,7 @@ func CreateJobHandler(c *gin.Context) {
 	}
 
 	//logica para encolar en sqs
-	_, err = SQSClient.SendMessage(
+	_, err = getSQS().SendMessage(
 		context.TODO(),
 		&sqs.SendMessageInput{
 			QueueUrl:    aws.String(os.Getenv("SQS_QUEUE_URL")),
