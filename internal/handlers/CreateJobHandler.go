@@ -33,7 +33,7 @@ func getDynamo() DynamoInterface {
 	return initializers.DY
 }
 
-var SQSClient SQSInterface = initializers.SQS
+var SQSClient SQSInterface
 
 func getSQS() SQSInterface {
 	if SQSClient != nil {
