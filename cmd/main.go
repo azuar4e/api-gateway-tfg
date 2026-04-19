@@ -24,8 +24,8 @@ func main() {
 
 	v1 := r.Group("/api/v1")
 	//registro y login de users
-	v1.POST("/singin", controllers.SinginHandler)
-	v1.POST("/singup", controllers.RegisterHandler)
+	v1.POST("/signin", controllers.SinginHandler)
+	v1.POST("/signup", controllers.RegisterHandler)
 	v1.Use(middleware.AuthMiddleware())
 	//handlers de operaciones que requieren validacion
 	v1.POST("/jobs", handlers.CreateJobHandler)
