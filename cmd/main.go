@@ -30,7 +30,9 @@ func main() {
 	//handlers de operaciones que requieren validacion
 	v1.POST("/jobs", handlers.CreateJobHandler)
 	v1.GET("/jobs", handlers.GetJobsHandler)
+	v1.DELETE("/jobs", handlers.DeleteJobsHandler)
 	v1.GET("/jobs/:id", handlers.GetJobByIdHandler)
+	v1.DELETE("/jobs/:id", handlers.DeleteJobHandler)
 	v1.GET("/validate", controllers.Validate)
 
 	r.Run(":9090")
