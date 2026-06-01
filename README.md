@@ -1,6 +1,6 @@
 # API-Gateway
 
-![Go](https://img.shields.io/badge/Go-1.21-blue)
+![Go](https://img.shields.io/badge/Go-1.24-blue)
 ![AWS](https://img.shields.io/badge/AWS-EKS%20%7C%20RDS%20%7C%20DynamoDB%20%7C%20SQS%20%7C%20SNS-orange)
 
 The source code of this repository corresponds to an API gateway microservice for my TFG (bachelor's thesis). The API is the entry point to the system, it uses the Gin library — a Go framework orientated to the development of APIs REST — and the AWS SDK for Go, necessary for the integration with the managed services used in the architecture.
