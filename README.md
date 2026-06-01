@@ -24,7 +24,7 @@ The API exposes the following *endpoints*:
 ```Go
 v1 := r.Group("/api/v1")
 
-v1.POST("/signin", controllers.SinginHandler)
+v1.POST("/signin", controllers.SigninHandler)
 v1.POST("/signup", controllers.RegisterHandler)
 
 v1.Use(middleware.AuthMiddleware())
@@ -37,7 +37,7 @@ v1.DELETE("/jobs/:id", handlers.DeleteJobHandler)
 v1.GET("/validate", controllers.Validate)
 ```
 
-First of all, the user signup and signin, where it will require a username and a password, then a cookie will be generated through JWT, which is needed for the authentication to the protected endpoints. The middleware function will check the reliablity of the cookie. If everything is correct then the user will be able to create, list and delete jobs.
+First of all, the user signup and signin, where it will require a username and a password, then a cookie will be generated through **JWT**, which is needed for the authentication to the protected endpoints. The middleware function will check the reliablity of the cookie. If everything is correct then the user will be able to create, list and delete jobs.
 
 ## Requirements
 
