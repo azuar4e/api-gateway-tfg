@@ -5,7 +5,7 @@
 
 The source code of this repository corresponds to an API gateway microservice for my TFG (bachelor's thesis). The API is the entry point to the system, it uses the Gin library — a Go framework orientated to the development of APIs REST — and the AWS SDK for Go, necessary for the integration with the managed services used in the architecture.
 
-The complete explanation of the project can be found at my [TFG](https://github.com/azuar4e/tfg) repository.
+The complete explanation of the project can be found in my [TFG](https://azuar4e.github.io/en/posts/tfg) article on my blog.
 
 ## Overview
 
